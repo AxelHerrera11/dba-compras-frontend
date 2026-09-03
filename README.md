@@ -1,8 +1,16 @@
 # Dashboard de Análisis de Compras — Frontend (Grupo 2)
 
-Frontend que consume la API RESTful de `DBA_COMPRAS` (repo separado: `dba-compras-backend`) y muestra un dashboard de reportería y análisis.
+Frontend que consume la API RESTful de `DBA_COMPRAS` (repo separado: `dba-compras-backend`, ya desplegado en Render) y muestra un dashboard de reportería y análisis.
 
-> Este README asume **Vue 3 + Vite**, ya que es el stack que el equipo usó en el proyecto anterior de Desarrollo Web. Si terminan usando otro framework (React, Svelte, etc.), la estructura de carpetas y los comandos de build cambian — ajusten esta sección según corresponda.
+Stack: **Vue 3 + Vite**.
+
+## Estado actual
+
+- [x] Proyecto Vite generado
+- [x] `.gitignore` configurado
+- [x] Deploy a GitHub Pages configurado (`gh-pages`, `base` en `vite.config.js`, scripts en `package.json`)
+- [ ] Desarrollo del dashboard (pendiente — Lis)
+- [ ] Primer deploy publicado
 
 ## Integrantes y tareas de frontend
 
@@ -15,21 +23,21 @@ Frontend que consume la API RESTful de `DBA_COMPRAS` (repo separado: `dba-compra
 ## Requisitos previos
 
 - Node.js (18 o superior)
-- El backend (`dba-compras-backend`) corriendo localmente o ya desplegado, con su URL a mano
+- Backend ya desplegado en `https://dba-compras-backend.onrender.com` (o corriendo localmente en `http://localhost:8080`)
 
 ## Configuración del entorno
 
-La URL de la API **no debe quedar escrita directamente en el código** — se define como variable de entorno para poder cambiar entre desarrollo local y producción sin tocar el código fuente.
+La URL de la API se define como variable de entorno para poder cambiar entre desarrollo local y producción sin tocar el código fuente.
 
 1. Copiar el archivo de ejemplo:
    ```bash
    cp .env.example .env
    ```
-2. Editar `.env` con la URL del backend:
+2. El `.env` ya viene apuntando al backend desplegado:
    ```
-   VITE_API_URL=http://localhost:8080
+   VITE_API_URL=https://dba-compras-backend.onrender.com
    ```
-   En producción, este valor debe apuntar a la URL pública donde quede desplegado el backend (Render, Railway, etc.), no a `localhost`.
+   Si están probando contra el backend corriendo en local, cambiarlo a `http://localhost:8080`.
 
 3. Usarla en el código así (ejemplo con `fetch`):
    ```js
@@ -47,7 +55,7 @@ npm install
 npm run dev
 ```
 
-Esto levanta un servidor de desarrollo (normalmente en `http://localhost:5173`). Si al consumir la API ven un error de CORS, avisen al equipo de backend para que agreguen ese origen en `CorsConfig.java`.
+Esto levanta un servidor de desarrollo (normalmente en `http://localhost:5173`).
 
 ## Estructura sugerida
 
@@ -66,30 +74,21 @@ src/
 
 Centralizar las llamadas a la API en `services/api.js` (una función por endpoint) evita que cada quien escriba su propio `fetch` suelto y hace más fácil cambiar la URL base en un solo lugar.
 
-## Build para producción
-
-```bash
-npm run build
-```
-
-Esto genera la carpeta `dist/` con los archivos estáticos listos para publicar.
-
 ## Publicar en GitHub Pages
 
-1. En `vite.config.js`, configurar `base` con el nombre del repo (importante, si no las rutas quedan rotas en producción):
-   ```js
-   export default defineConfig({
-     base: '/dba-compras-frontend/', // ajustar al nombre real del repo
-     // ...
-   })
-   ```
-2. Generar el build:
-   ```bash
-   npm run build
-   ```
-3. Publicar la carpeta `dist/` en la rama `gh-pages` (usando `gh-pages` npm package, o manualmente, o vía GitHub Actions).
-4. En GitHub → Settings → Pages, confirmar que la fuente sea la rama `gh-pages`.
-5. Una vez publicado, avisar al equipo de backend la URL final para que la agreguen en `allowedOrigins` de `CorsConfig.java` (ahora mismo está en `"*"` como placeholder, hay que restringirlo a esta URL antes de la entrega).
+El deploy ya está configurado en el repo (`gh-pages` instalado, `base` en `vite.config.js`, scripts en `package.json`). Para publicar:
+
+```bash
+npm run deploy
+```
+
+Esto compila el proyecto y publica el contenido de `dist/` en la rama `gh-pages`. La primera vez, confirmar en GitHub → Settings → Pages que la fuente sea la rama `gh-pages`, carpeta `/ (root)`.
+
+URL publicada: `https://axelherrera11.github.io/dba-compras-frontend/`
+
+> No hace falta correr el deploy hasta tener algo visible que mostrar — publicar un proyecto vacío no aporta nada. Cuando Lis tenga al menos el layout base del dashboard, ahí sí correr `npm run deploy`.
+
+Después del primer deploy, avisar al equipo de backend para que actualicen `allowedOrigins` en `CorsConfig.java` con esta URL (ahora mismo está en `"*"` como placeholder, hay que restringirlo antes de la entrega final).
 
 ## Checklist del dashboard
 
