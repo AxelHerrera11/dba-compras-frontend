@@ -1,13 +1,19 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { Bar } from 'vue-chartjs'
 import { useApiData } from '../../composables/useApiData'
 import { getClientesTop10 } from '../../services/api'
 import { barOptions, formatCurrency, isDarkMode, normalizeTopClients } from '../../utils/chart'
 import ChartCard from './ChartCard.vue'
 
-const getTopTenClients = (options) => getClientesTop10(10, options)
+const props = defineProps({
+  filtros: { type: Object, default: () => ({}) },
+})
+
+const getTopTenClients = (options) => getClientesTop10(10, props.filtros, options)
 const { data: clients, error, loading, reload } = useApiData(getTopTenClients, normalizeTopClients)
+
+watch(() => props.filtros, reload, { deep: true })
 
 const chartData = computed(() => ({
   labels: clients.value.map((item) => item.label),

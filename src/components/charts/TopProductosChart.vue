@@ -1,12 +1,19 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { Bar } from 'vue-chartjs'
 import { useApiData } from '../../composables/useApiData'
 import { getProductosTop10 } from '../../services/api'
 import { barOptions, formatNumber, normalizeTopProducts } from '../../utils/chart'
 import ChartCard from './ChartCard.vue'
 
-const { data: products, error, loading, reload } = useApiData(getProductosTop10, normalizeTopProducts)
+const props = defineProps({
+  filtros: { type: Object, default: () => ({}) },
+})
+
+const getFilteredProductosTop10 = (options) => getProductosTop10(props.filtros, options)
+const { data: products, error, loading, reload } = useApiData(getFilteredProductosTop10, normalizeTopProducts)
+
+watch(() => props.filtros, reload, { deep: true })
 
 const chartData = computed(() => ({
   labels: products.value.map((item) => item.label),

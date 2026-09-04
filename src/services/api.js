@@ -2,6 +2,15 @@ const DEFAULT_API_URL = 'https://dba-compras-backend.onrender.com'
 const API_URL = (import.meta.env.VITE_API_URL || DEFAULT_API_URL).replace(/\/$/, '')
 const TIMEOUT_MS = 15000
 
+function buildQuery(params = {}) {
+  const usp = new URLSearchParams()
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') usp.set(key, value)
+  })
+  const qs = usp.toString()
+  return qs ? `?${qs}` : ''
+}
+
 async function request(path, options = {}) {
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS)
@@ -46,8 +55,10 @@ async function request(path, options = {}) {
   }
 }
 
-export async function getClientesTop10(limite = 10, options) {
-  return request(`/api/clientes/top10?limite=${limite}`, options)
+export async function getClientesTop10(limite = 10, filtros = {}, options) {
+  const { fechaDesde, fechaHasta, idCategoria, idProducto } = filtros
+  const query = buildQuery({ limite, fechaDesde, fechaHasta, idCategoria, idProducto })
+  return request(`/api/clientes/top10${query}`, options)
 }
 
 export async function getClientesSinCompras() {
@@ -74,18 +85,42 @@ export async function getTicketPromedio() {
   return resumen.ticketPromedio
 }
 
-export function getComprasPorMes(options) {
-  return request('/api/compras/por-mes', options)
+export function getComprasPorMes(filtros = {}, options) {
+  const { fechaDesde, fechaHasta, idCliente, idCategoria, idProducto } = filtros
+  const query = buildQuery({ fechaDesde, fechaHasta, idCliente, idCategoria, idProducto })
+  return request(`/api/compras/por-mes${query}`, options)
 }
 
-export function getProductosTop10(options) {
-  return request('/api/productos/top10', options)
+export function getProductosTop10(filtros = {}, options) {
+  const { fechaDesde, fechaHasta, idCliente, idCategoria } = filtros
+  const query = buildQuery({ fechaDesde, fechaHasta, idCliente, idCategoria })
+  return request(`/api/productos/top10${query}`, options)
 }
 
-export async function getTarjetasPorMarca() {
-  return request('/api/tarjetas/por-marca')
+export async function getTarjetasPorMarca(filtros = {}) {
+  const { fechaDesde, fechaHasta, idCliente } = filtros
+  const query = buildQuery({ fechaDesde, fechaHasta, idCliente })
+  return request(`/api/tarjetas/por-marca${query}`)
 }
 
-export async function getCreditoVsDebito() {
-  return request('/api/tarjetas/credito-vs-debito')
+export async function getCreditoVsDebito(filtros = {}) {
+  const { fechaDesde, fechaHasta, idCliente } = filtros
+  const query = buildQuery({ fechaDesde, fechaHasta, idCliente })
+  return request(`/api/tarjetas/credito-vs-debito${query}`)
+}
+
+export async function getComprasPorCategoria(filtros = {}) {
+  const { fechaDesde, fechaHasta, idCliente } = filtros
+  const query = buildQuery({ fechaDesde, fechaHasta, idCliente })
+  return request(`/api/productos/por-categoria${query}`)
+}
+
+export async function getCategorias() {
+  return request('/api/categorias')
+}
+
+export async function getProductos(filtros = {}) {
+  const { q, idCategoria } = filtros
+  const query = buildQuery({ q, idCategoria })
+  return request(`/api/productos${query}`)
 }

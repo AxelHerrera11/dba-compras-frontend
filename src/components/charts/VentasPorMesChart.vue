@@ -1,12 +1,19 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { Line } from 'vue-chartjs'
 import { useApiData } from '../../composables/useApiData'
 import { getComprasPorMes } from '../../services/api'
 import { chartTextColor, formatCurrency, normalizeMonthlySales } from '../../utils/chart'
 import ChartCard from './ChartCard.vue'
 
-const { data: sales, error, loading, reload } = useApiData(getComprasPorMes, normalizeMonthlySales)
+const props = defineProps({
+  filtros: { type: Object, default: () => ({}) },
+})
+
+const getFilteredComprasPorMes = (options) => getComprasPorMes(props.filtros, options)
+const { data: sales, error, loading, reload } = useApiData(getFilteredComprasPorMes, normalizeMonthlySales)
+
+watch(() => props.filtros, reload, { deep: true })
 
 const chartData = computed(() => ({
   labels: sales.value.map((item) => item.label),
