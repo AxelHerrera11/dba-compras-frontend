@@ -1,5 +1,22 @@
 <script setup>
+import { reactive } from 'vue'
 import KpiGrid from '../components/kpi/KpiGrid.vue'
+import FiltrosBar from '../components/filters/FiltrosBar.vue'
+import ComprasPorCategoria from '../components/charts/ComprasPorCategoria.vue'
+import TarjetasPorMarca from '../components/charts/TarjetasPorMarca.vue'
+import CreditoVsDebito from '../components/charts/CreditoVsDebito.vue'
+
+const filtros = reactive({
+  fechaDesde: '',
+  fechaHasta: '',
+  cliente: '',
+  categoria: '',
+  producto: '',
+})
+
+function aplicarFiltros(nuevosFiltros) {
+  Object.assign(filtros, nuevosFiltros)
+}
 </script>
 
 <template>
@@ -15,12 +32,31 @@ import KpiGrid from '../components/kpi/KpiGrid.vue'
         <KpiGrid />
       </section>
 
+      <section class="dashboard__section dashboard__filtros">
+        <h2 class="dashboard__section-title">Filtros</h2>
+        <FiltrosBar @cambiar="aplicarFiltros" />
+      </section>
+
       <section class="dashboard__section dashboard__charts">
         <h2 class="dashboard__section-title">Gráficas</h2>
         <p class="dashboard__placeholder">
           Espacio reservado para las gráficas del equipo (ventas por mes, top 10
           clientes, top 10 productos, categorías, tarjetas y crédito vs débito).
         </p>
+        <div class="dashboard__graficas-grid">
+          <div class="dashboard__grafica">
+            <h3 class="dashboard__grafica-titulo">Compras por categoría</h3>
+            <ComprasPorCategoria :filtros="filtros" />
+          </div>
+          <div class="dashboard__grafica">
+            <h3 class="dashboard__grafica-titulo">Tarjetas por marca</h3>
+            <TarjetasPorMarca :filtros="filtros" />
+          </div>
+          <div class="dashboard__grafica">
+            <h3 class="dashboard__grafica-titulo">Crédito vs Débito</h3>
+            <CreditoVsDebito :filtros="filtros" />
+          </div>
+        </div>
       </section>
     </main>
   </div>
@@ -64,6 +100,20 @@ import KpiGrid from '../components/kpi/KpiGrid.vue'
   margin-top: 8px;
 }
 
+.dashboard__graficas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.dashboard__grafica-titulo {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #08060d;
+}
+
 .dashboard__placeholder {
   margin: 0;
   padding: 32px;
@@ -75,7 +125,8 @@ import KpiGrid from '../components/kpi/KpiGrid.vue'
 
 @media (prefers-color-scheme: dark) {
   .dashboard__title,
-  .dashboard__section-title {
+  .dashboard__section-title,
+  .dashboard__grafica-titulo {
     color: #f3f4f6;
   }
   .dashboard__subtitle {
