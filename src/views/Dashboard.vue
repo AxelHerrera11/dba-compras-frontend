@@ -1,5 +1,6 @@
 <script setup>
 import { reactive } from 'vue'
+import DidhyerCharts from '../components/charts/DidhyerCharts.vue'
 import KpiGrid from '../components/kpi/KpiGrid.vue'
 import FiltrosBar from '../components/filters/FiltrosBar.vue'
 import ComprasPorCategoria from '../components/charts/ComprasPorCategoria.vue'
@@ -39,10 +40,7 @@ function aplicarFiltros(nuevosFiltros) {
 
       <section class="dashboard__section dashboard__charts">
         <h2 class="dashboard__section-title">Gráficas</h2>
-        <p class="dashboard__placeholder">
-          Espacio reservado para las gráficas del equipo (ventas por mes, top 10
-          clientes, top 10 productos, categorías, tarjetas y crédito vs débito).
-        </p>
+        <DidhyerCharts />
         <div class="dashboard__graficas-grid">
           <div class="dashboard__grafica">
             <h3 class="dashboard__grafica-titulo">Compras por categoría</h3>
@@ -114,15 +112,6 @@ function aplicarFiltros(nuevosFiltros) {
   color: #08060d;
 }
 
-.dashboard__placeholder {
-  margin: 0;
-  padding: 32px;
-  border: 1px dashed #c9c5ce;
-  border-radius: 12px;
-  color: #6b6375;
-  background: #faf9fb;
-}
-
 @media (prefers-color-scheme: dark) {
   .dashboard__title,
   .dashboard__section-title,
@@ -130,11 +119,6 @@ function aplicarFiltros(nuevosFiltros) {
     color: #f3f4f6;
   }
   .dashboard__subtitle {
-    color: #9ca3af;
-  }
-  .dashboard__placeholder {
-    border-color: #2e303a;
-    background: #1f2028;
     color: #9ca3af;
   }
 }
