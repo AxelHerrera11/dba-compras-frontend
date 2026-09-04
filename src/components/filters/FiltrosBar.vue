@@ -3,6 +3,8 @@ import { reactive, onMounted } from 'vue'
 import {
   getClientesTop10,
   getClientesSinCompras,
+  getCategorias,
+  getProductos,
 } from '../../services/api.js'
 
 const emit = defineEmits(['cambiar'])
@@ -11,47 +13,54 @@ const estado = reactive({
   clientes: [],
   clientesCargando: true,
   clientesError: '',
+  categorias: [],
+  categoriasCargando: true,
+  categoriasError: '',
+  productos: [],
+  productosCargando: true,
+  productosError: '',
 })
 
 const filtros = reactive({
   fechaDesde: '',
   fechaHasta: '',
-  cliente: '',
-  categoria: '',
-  producto: '',
+  idCliente: '',
+  idCategoria: '',
+  idProducto: '',
 })
 
 function notificar() {
   emit('cambiar', { ...filtros })
 }
 
-function limpiarClientes() {
-  estado.clientes = []
-  estado.clientesCargando = false
-  estado.clientesError = ''
+function cargarProductos() {
+  estado.productosCargando = true
+  estado.productosError = ''
+  getProductos({ idCategoria: filtros.idCategoria })
+    .then((data) => {
+      estado.productos = Array.isArray(data) ? data : []
+      estado.productosCargando = false
+    })
+    .catch((err) => {
+      estado.productosError = err.message
+      estado.productosCargando = false
+    })
 }
 
-function toggleCategoria() {
-  if (filtros.categoria) {
-    filtros.categoria = ''
-    notificar()
-  }
-}
-
-function toggleProducto() {
-  if (filtros.producto) {
-    filtros.producto = ''
-    notificar()
-  }
+function cambiarCategoria() {
+  filtros.idProducto = ''
+  notificar()
+  cargarProductos()
 }
 
 function limpiarFiltros() {
   filtros.fechaDesde = ''
   filtros.fechaHasta = ''
-  filtros.cliente = ''
-  filtros.categoria = ''
-  filtros.producto = ''
+  filtros.idCliente = ''
+  filtros.idCategoria = ''
+  filtros.idProducto = ''
   notificar()
+  cargarProductos()
 }
 
 onMounted(() => {
@@ -92,10 +101,21 @@ onMounted(() => {
       estado.clientesCargando = false
     })
     .catch(() => {
-      estado.clientesError =
-        'No se pudieron cargar los clientes.'
+      estado.clientesError = 'No se pudieron cargar los clientes.'
       estado.clientesCargando = false
     })
+
+  getCategorias()
+    .then((data) => {
+      estado.categorias = Array.isArray(data) ? data : []
+      estado.categoriasCargando = false
+    })
+    .catch((err) => {
+      estado.categoriasError = err.message
+      estado.categoriasCargando = false
+    })
+
+  cargarProductos()
 })
 </script>
 
@@ -128,7 +148,7 @@ onMounted(() => {
       <label class="filtros__label" for="filtro-cliente">Cliente</label>
       <select
         id="filtro-cliente"
-        v-model="filtros.cliente"
+        v-model="filtros.idCliente"
         class="filtros__input"
         :disabled="estado.clientesCargando"
         @change="notificar"
@@ -145,33 +165,43 @@ onMounted(() => {
     </div>
 
     <div class="filtros__campo">
-      <label class="filtros__label" for="filtro-categoria">
-        Categoría
-        <span class="filtros__nota">(sin API)</span>
-      </label>
-      <input
+      <label class="filtros__label" for="filtro-categoria">Categoría</label>
+      <select
         id="filtro-categoria"
-        type="text"
-        class="filtros__input filtros__input--deshabilitado"
-        disabled
-        placeholder="No disponible"
-        @click="toggleCategoria"
-      />
+        v-model="filtros.idCategoria"
+        class="filtros__input"
+        :disabled="estado.categoriasCargando"
+        @change="cambiarCategoria"
+      >
+        <option value="">Todas</option>
+        <option
+          v-for="cat in estado.categorias"
+          :key="cat.idCategoria"
+          :value="String(cat.idCategoria)"
+        >
+          {{ cat.nombreCategoria }}
+        </option>
+      </select>
     </div>
 
     <div class="filtros__campo">
-      <label class="filtros__label" for="filtro-producto">
-        Producto
-        <span class="filtros__nota">(sin API)</span>
-      </label>
-      <input
+      <label class="filtros__label" for="filtro-producto">Producto</label>
+      <select
         id="filtro-producto"
-        type="text"
-        class="filtros__input filtros__input--deshabilitado"
-        disabled
-        placeholder="No disponible"
-        @click="toggleProducto"
-      />
+        v-model="filtros.idProducto"
+        class="filtros__input"
+        :disabled="estado.productosCargando"
+        @change="notificar"
+      >
+        <option value="">Todos</option>
+        <option
+          v-for="p in estado.productos"
+          :key="p.idProducto"
+          :value="String(p.idProducto)"
+        >
+          {{ p.nombreProducto }}
+        </option>
+      </select>
     </div>
 
     <button
@@ -182,12 +212,8 @@ onMounted(() => {
       Limpiar filtros
     </button>
 
-    <p class="filtros__aviso">
-      {{
-        estado.clientesError
-          ? estado.clientesError
-          : 'El backend desplegado no soporta filtros por rango de fecha, categoría ni producto; estos se aplican por el momento sobre los datos reales disponibles en el frontend.'
-      }}
+    <p v-if="estado.clientesError || estado.categoriasError || estado.productosError" class="filtros__aviso filtros__aviso--error">
+      {{ estado.clientesError || estado.categoriasError || estado.productosError }}
     </p>
   </div>
 </template>
@@ -213,11 +239,6 @@ onMounted(() => {
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
-.filtros__nota {
-  color: #b45309;
-  text-transform: none;
-  font-weight: 500;
-}
 .filtros__input {
   width: 100%;
   padding: 8px 10px;
@@ -227,7 +248,7 @@ onMounted(() => {
   border: 1px solid #c9c5ce;
   border-radius: 8px;
 }
-.filtros__input--deshabilitado {
+.filtros__input:disabled {
   background: #f0eef2;
   color: #9ca3af;
   cursor: not-allowed;
@@ -253,6 +274,9 @@ onMounted(() => {
   font-size: 12px;
   color: #9ca3af;
 }
+.filtros__aviso--error {
+  color: #b45309;
+}
 
 @media (prefers-color-scheme: dark) {
   .filtros {
@@ -267,7 +291,7 @@ onMounted(() => {
     background: #16171d;
     border-color: #2e303a;
   }
-  .filtros__input--deshabilitado {
+  .filtros__input:disabled {
     background: #2a2c36;
     color: #6b7280;
   }

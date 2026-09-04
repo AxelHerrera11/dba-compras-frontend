@@ -16,7 +16,7 @@ const estado = reactive({
 function cargar() {
   estado.cargando = true
   estado.error = ''
-  getCreditoVsDebito()
+  getCreditoVsDebito(props.filtros)
     .then((data) => {
       estado.datos = Array.isArray(data) ? data : []
       estado.cargando = false
@@ -66,7 +66,7 @@ const chartOptions = {
   },
 }
 
-watch(() => props.filtros, cargar)
+watch(() => props.filtros, cargar, { deep: true })
 </script>
 
 <template>

@@ -1,88 +1,132 @@
 <script setup>
-import { computed } from 'vue'
+import { reactive, watch, onMounted, computed } from 'vue'
+import { getComprasPorCategoria } from '../../services/api.js'
+import BaseChart from './BaseChart.vue'
 
 const props = defineProps({
   filtros: { type: Object, default: () => ({}) },
 })
 
-const aviso = computed(() => {
-  const f = props.filtros || {}
-  const activos = []
-  if (f.fechaDesde || f.fechaHasta) activos.push('fecha')
-  if (f.cliente) activos.push('cliente')
-  if (f.categoria) activos.push('categoría')
-  if (f.producto) activos.push('producto')
-  return activos.length ? activos.join(', ') : null
+const estado = reactive({
+  datos: [],
+  cargando: true,
+  error: '',
 })
+
+function cargar() {
+  estado.cargando = true
+  estado.error = ''
+  getComprasPorCategoria(props.filtros)
+    .then((data) => {
+      estado.datos = Array.isArray(data) ? data : []
+      estado.cargando = false
+    })
+    .catch((err) => {
+      estado.error = err.message
+      estado.cargando = false
+    })
+}
+
+onMounted(cargar)
+
+const chartData = computed(() => ({
+  labels: estado.datos.map((d) => d.nombreCategoria),
+  datasets: [
+    {
+      label: 'Monto total (GTQ)',
+      data: estado.datos.map((d) => d.totalVendido),
+      backgroundColor: '#7c5cff',
+      borderRadius: 6,
+    },
+  ],
+}))
+
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      callbacks: {
+        label(context) {
+          const fila = estado.datos[context.dataIndex]
+          const monto = new Intl.NumberFormat('es-GT', {
+            style: 'currency', currency: 'GTQ', maximumFractionDigits: 0,
+          }).format(Number(fila?.totalVendido || 0))
+          const cantidad = new Intl.NumberFormat('es-GT')
+            .format(Number(fila?.cantidadVendida || 0))
+          return ` ${monto} · ${cantidad} unidades`
+        },
+      },
+    },
+  },
+  scales: {
+    y: {
+      beginAtZero: true,
+      ticks: {
+        callback(value) {
+          return new Intl.NumberFormat('es-GT').format(value)
+        },
+      },
+    },
+  },
+}
+
+watch(() => props.filtros, cargar, { deep: true })
 </script>
 
 <template>
   <section class="grafica">
-    <div class="grafica__contenedor grafica__contenedor--sin-datos">
-      <p class="grafica__titulo">Endpoint no disponible en el backend</p>
-      <p class="grafica__texto">
-        El backend desplegado no expone un endpoint de «compras por categoría»
-        (se probaron <code>/api/categorias</code> y
-        <code>/api/productos/por-categoria</code> sin resultado). Para mostrar
-        esta gráfica con datos reales se requiere que el equipo de backend la
-        implemente. No se modifica el backend desde este frontend.
-      </p>
-      <p v-if="aviso" class="grafica__texto grafica__texto--filtros">
-        Filtros activos (se aplicarían cuando el endpoint esté disponible):
-        {{ aviso }}.
-      </p>
-      <p v-else class="grafica__texto grafica__texto--filtros">
-        Sin filtros activos.
-      </p>
+    <p v-if="estado.cargando" class="grafica__aviso">Cargando…</p>
+    <p v-else-if="estado.error" class="grafica__aviso grafica__aviso--error">
+      No se pudieron cargar los datos.
+      <span class="grafica__detalle">{{ estado.error }}</span>
+    </p>
+    <p v-else-if="estado.datos.length === 0" class="grafica__aviso">
+      No hay datos para mostrar.
+    </p>
+    <div v-else class="grafica__contenedor">
+      <BaseChart type="bar" :data="chartData" :options="chartOptions" />
     </div>
   </section>
 </template>
 
 <style scoped>
+.grafica__aviso {
+  margin: 0;
+  padding: 32px;
+  text-align: center;
+  color: #6b6375;
+  border: 1px dashed #c9c5ce;
+  border-radius: 12px;
+  background: #faf9fb;
+}
+.grafica__aviso--error {
+  color: #b45309;
+}
+.grafica__detalle {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #9ca3af;
+}
 .grafica__contenedor {
   background: #fff;
   border: 1px solid var(--border, #e5e4e7);
   border-radius: 12px;
-  padding: 24px;
+  padding: 20px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-}
-.grafica__titulo {
-  margin: 0 0 8px;
-  font-size: 15px;
-  font-weight: 600;
-  color: #b45309;
-}
-.grafica__texto {
-  margin: 0 0 8px;
-  font-size: 14px;
-  line-height: 1.5;
-  color: #6b6375;
-}
-.grafica__texto--filtros {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid #eee;
-}
-.grafica__texto code {
-  background: #f0eef2;
-  border-radius: 4px;
-  padding: 1px 5px;
-  font-size: 12px;
 }
 
 @media (prefers-color-scheme: dark) {
+  .grafica__aviso {
+    border-color: #2e303a;
+    background: #1f2028;
+    color: #9ca3af;
+  }
   .grafica__contenedor {
     background: #1f2028;
     border-color: #2e303a;
-  }
-  .grafica__texto {
-    color: #9ca3af;
-  }
-  .grafica__texto--filtros {
-    border-top-color: #2e303a;
-  }
-  .grafica__texto code {
-    background: #2a2c36;
   }
 }
 </style>

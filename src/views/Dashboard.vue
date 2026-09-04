@@ -10,9 +10,9 @@ import CreditoVsDebito from '../components/charts/CreditoVsDebito.vue'
 const filtros = reactive({
   fechaDesde: '',
   fechaHasta: '',
-  cliente: '',
-  categoria: '',
-  producto: '',
+  idCliente: '',
+  idCategoria: '',
+  idProducto: '',
 })
 
 function aplicarFiltros(nuevosFiltros) {
@@ -40,7 +40,7 @@ function aplicarFiltros(nuevosFiltros) {
 
       <section class="dashboard__section dashboard__charts">
         <h2 class="dashboard__section-title">Gráficas</h2>
-        <DidhyerCharts />
+        <DidhyerCharts :filtros="filtros" />
         <div class="dashboard__graficas-grid">
           <div class="dashboard__grafica">
             <h3 class="dashboard__grafica-titulo">Compras por categoría</h3>

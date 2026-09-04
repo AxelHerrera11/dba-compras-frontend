@@ -2,13 +2,17 @@
 import TopClientesChart from './TopClientesChart.vue'
 import TopProductosChart from './TopProductosChart.vue'
 import VentasPorMesChart from './VentasPorMesChart.vue'
+
+defineProps({
+  filtros: { type: Object, default: () => ({}) },
+})
 </script>
 
 <template>
   <section class="charts" aria-label="Gráficas de ventas, clientes y productos">
-    <VentasPorMesChart />
-    <TopClientesChart />
-    <TopProductosChart />
+    <VentasPorMesChart :filtros="filtros" />
+    <TopClientesChart :filtros="filtros" />
+    <TopProductosChart :filtros="filtros" />
   </section>
 </template>
 

@@ -16,7 +16,7 @@ const estado = reactive({
 function cargar() {
   estado.cargando = true
   estado.error = ''
-  getTarjetasPorMarca()
+  getTarjetasPorMarca(props.filtros)
     .then((data) => {
       estado.datos = Array.isArray(data) ? data : []
       estado.cargando = false
@@ -29,22 +29,12 @@ function cargar() {
 
 onMounted(cargar)
 
-const datosFiltrados = computed(() => {
-  const f = props.filtros || {}
-  let filas = estado.datos
-  if (f.cliente) {
-    filas = filas.filter((fila) => String(fila.titular || '').toLowerCase()
-      .includes(String(f.cliente).toLowerCase()))
-  }
-  return filas
-})
-
 const chartData = computed(() => ({
-  labels: datosFiltrados.value.map((d) => d.marca),
+  labels: estado.datos.map((d) => d.marca),
   datasets: [
     {
       label: 'Monto total (GTQ)',
-      data: datosFiltrados.value.map((d) => d.montoTotal),
+      data: estado.datos.map((d) => d.montoTotal),
       backgroundColor: ['#7c5cff', '#2b7fff', '#00b894', '#f59e0b'],
       borderRadius: 6,
     },
@@ -69,7 +59,7 @@ const chartOptions = {
   },
 }
 
-watch(() => props.filtros, cargar)
+watch(() => props.filtros, cargar, { deep: true })
 </script>
 
 <template>
@@ -79,7 +69,7 @@ watch(() => props.filtros, cargar)
       No se pudieron cargar los datos.
       <span class="grafica__detalle">{{ estado.error }}</span>
     </p>
-    <p v-else-if="datosFiltrados.length === 0" class="grafica__aviso">
+    <p v-else-if="estado.datos.length === 0" class="grafica__aviso">
       No hay datos para mostrar.
     </p>
     <div v-else class="grafica__contenedor">
