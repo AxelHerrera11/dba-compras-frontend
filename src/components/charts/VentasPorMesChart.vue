@@ -3,7 +3,7 @@ import { computed, watch } from 'vue'
 import { Line } from 'vue-chartjs'
 import { useApiData } from '../../composables/useApiData'
 import { getComprasPorMes } from '../../services/api'
-import { chartTextColor, formatCurrency, normalizeMonthlySales } from '../../utils/chart'
+import { chartGridColor, chartTextColor, formatCurrency, normalizeMonthlySales } from '../../utils/chart'
 import ChartCard from './ChartCard.vue'
 
 const props = defineProps({
@@ -21,10 +21,10 @@ const chartData = computed(() => ({
     {
       data: sales.value.map((item) => item.value),
       label: 'Ventas',
-      borderColor: '#0f766e',
-      backgroundColor: 'rgba(13, 148, 136, 0.12)',
+      borderColor: '#8B74EC',
+      backgroundColor: 'rgba(139, 116, 236, 0.14)',
       pointBackgroundColor: '#ffffff',
-      pointBorderColor: '#0f766e',
+      pointBorderColor: '#8B74EC',
       pointBorderWidth: 2,
       pointRadius: 4,
       pointHoverRadius: 6,
@@ -53,7 +53,7 @@ const chartOptions = {
     y: {
       beginAtZero: true,
       border: { display: false },
-      grid: { color: '#e5ebe7' },
+      grid: { color: chartGridColor() },
       ticks: { callback: formatCurrency, color: textColor, maxTicksLimit: 6 },
     },
   },

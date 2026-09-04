@@ -73,12 +73,12 @@ function aplicarFiltros(nuevosFiltros) {
   margin: 0 0 8px;
   font-size: 32px;
   font-weight: 700;
-  color: #08060d;
+  color: var(--text-h);
 }
 
 .dashboard__subtitle {
   margin: 0;
-  color: #6b6375;
+  color: var(--text);
   font-size: 16px;
 }
 
@@ -91,7 +91,7 @@ function aplicarFiltros(nuevosFiltros) {
 .dashboard__section-title {
   margin: 0 0 16px;
   font-size: 18px;
-  color: #08060d;
+  color: var(--text-h);
 }
 
 .dashboard__charts {
@@ -109,17 +109,6 @@ function aplicarFiltros(nuevosFiltros) {
   margin: 0 0 12px;
   font-size: 16px;
   font-weight: 600;
-  color: #08060d;
-}
-
-@media (prefers-color-scheme: dark) {
-  .dashboard__title,
-  .dashboard__section-title,
-  .dashboard__grafica-titulo {
-    color: #f3f4f6;
-  }
-  .dashboard__subtitle {
-    color: #9ca3af;
-  }
+  color: var(--text-h);
 }
 </style>

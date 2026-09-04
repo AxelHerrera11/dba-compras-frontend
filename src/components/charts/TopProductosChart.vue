@@ -21,7 +21,7 @@ const chartData = computed(() => ({
     {
       data: products.value.map((item) => item.value),
       label: 'Ventas',
-      backgroundColor: '#d97706',
+      backgroundColor: '#F5B478',
       borderRadius: 7,
       borderSkipped: false,
       barThickness: 14,

@@ -38,21 +38,21 @@ const formateado = computed(() => {
 
 <style scoped>
 .kpi-card {
-  background: #fff;
-  border: 1px solid var(--border, #e5e4e7);
-  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow);
 }
 
 .kpi-card__title {
   margin: 0;
   font-size: 14px;
   font-weight: 600;
-  color: #6b6375;
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.4px;
 }
@@ -61,31 +61,18 @@ const formateado = computed(() => {
   margin: 0;
   font-size: 28px;
   font-weight: 700;
-  color: #08060d;
+  color: var(--text-h);
 }
 
 .kpi-card__value--loading {
-  color: #9ca3af;
+  color: var(--text-soft);
   font-weight: 500;
   font-size: 18px;
 }
 
 .kpi-card__value--error {
-  color: #b45309;
+  color: var(--danger);
   font-weight: 500;
   font-size: 18px;
-}
-
-@media (prefers-color-scheme: dark) {
-  .kpi-card {
-    background: #1f2028;
-    border-color: #2e303a;
-  }
-  .kpi-card__title {
-    color: #9ca3af;
-  }
-  .kpi-card__value {
-    color: #f3f4f6;
-  }
 }
 </style>

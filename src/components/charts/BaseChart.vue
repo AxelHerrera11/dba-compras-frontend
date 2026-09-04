@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, onBeforeUnmount, watch, ref } from 'vue'
 import { Chart } from 'chart.js/auto'
+import { chartTextColor } from '../../utils/chart.js'
 
 const props = defineProps({
   type: { type: String, required: true },
@@ -27,7 +28,7 @@ function render() {
 }
 
 onMounted(() => {
-  Chart.defaults.color = '#6b6375'
+  Chart.defaults.color = chartTextColor()
   Chart.defaults.font.family =
     "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
   render()

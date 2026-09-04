@@ -224,18 +224,18 @@ onMounted(() => {
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 12px;
   align-items: end;
-  background: #fff;
-  border: 1px solid var(--border, #e5e4e7);
-  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
   padding: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow);
 }
 .filtros__label {
   display: block;
   margin-bottom: 6px;
   font-size: 12px;
   font-weight: 600;
-  color: #6b6375;
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
@@ -243,14 +243,14 @@ onMounted(() => {
   width: 100%;
   padding: 8px 10px;
   font-size: 14px;
-  color: #08060d;
-  background: #fff;
-  border: 1px solid #c9c5ce;
+  color: var(--text-h);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 8px;
 }
 .filtros__input:disabled {
-  background: #f0eef2;
-  color: #9ca3af;
+  background: var(--surface-muted);
+  color: var(--text-soft);
   cursor: not-allowed;
 }
 .filtros__limpiar {
@@ -258,45 +258,23 @@ onMounted(() => {
   padding: 8px 14px;
   font-size: 13px;
   font-weight: 600;
-  color: #7c5cff;
+  color: var(--accent);
   background: transparent;
-  border: 1px solid #7c5cff;
+  border: 1px solid var(--accent);
   border-radius: 8px;
   cursor: pointer;
   justify-self: start;
 }
 .filtros__limpiar:hover {
-  background: #f3f0ff;
+  background: var(--accent-bg);
 }
 .filtros__aviso {
   grid-column: 1 / -1;
   margin: 0;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--text-soft);
 }
 .filtros__aviso--error {
-  color: #b45309;
-}
-
-@media (prefers-color-scheme: dark) {
-  .filtros {
-    background: #1f2028;
-    border-color: #2e303a;
-  }
-  .filtros__label {
-    color: #9ca3af;
-  }
-  .filtros__input {
-    color: #f3f4f6;
-    background: #16171d;
-    border-color: #2e303a;
-  }
-  .filtros__input:disabled {
-    background: #2a2c36;
-    color: #6b7280;
-  }
-  .filtros__limpiar:hover {
-    background: #2a2c36;
-  }
+  color: var(--danger);
 }
 </style>

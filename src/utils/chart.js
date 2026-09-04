@@ -53,11 +53,14 @@ const monthNames = [
   'Dic',
 ]
 
+export const chartPalette = ['#8B74EC', '#6BC7B3', '#F2A0C9', '#F5B478', '#8FB8F6', '#F0D179']
+
 export const formatCurrency = (value) => currency.format(Number(value) || 0)
 export const formatCompactNumber = (value) => compactNumber.format(Number(value) || 0)
 export const formatNumber = (value) => number.format(Number(value) || 0)
 export const isDarkMode = () => window.matchMedia('(prefers-color-scheme: dark)').matches
-export const chartTextColor = () => (isDarkMode() ? '#c4cccc' : '#526566')
+export const chartTextColor = () => (isDarkMode() ? '#b8afcc' : '#8a8296')
+export const chartGridColor = () => (isDarkMode() ? '#3a3452' : '#ede7f7')
 
 function numericValue(value, fieldName) {
   const number = Number(value)
@@ -125,7 +128,7 @@ export function barOptions(valueFormatter = formatCompactNumber) {
       x: {
         beginAtZero: true,
         border: { display: false },
-        grid: { color: '#e5ebe7' },
+        grid: { color: chartGridColor() },
         ticks: { callback: valueFormatter, color: textColor },
       },
       y: {

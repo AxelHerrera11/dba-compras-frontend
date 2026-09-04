@@ -21,7 +21,7 @@ const chartData = computed(() => ({
     {
       data: clients.value.map((item) => item.value),
       label: 'Total comprado',
-      backgroundColor: isDarkMode() ? '#22d3ee' : '#155e75',
+      backgroundColor: isDarkMode() ? '#A6C6F7' : '#8FB8F6',
       borderRadius: 7,
       borderSkipped: false,
       barThickness: 14,

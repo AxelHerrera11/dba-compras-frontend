@@ -36,7 +36,7 @@ const chartData = computed(() => ({
     {
       label: 'Monto total (GTQ)',
       data: estado.datos.map((d) => d.montoTotal),
-      backgroundColor: ['#7c5cff', '#00b894'],
+      backgroundColor: ['#8B74EC', '#6BC7B3'],
       borderWidth: 0,
     },
   ],
@@ -90,37 +90,25 @@ watch(() => props.filtros, cargar, { deep: true })
   margin: 0;
   padding: 32px;
   text-align: center;
-  color: #6b6375;
-  border: 1px dashed #c9c5ce;
-  border-radius: 12px;
-  background: #faf9fb;
+  color: var(--text);
+  border: 1px dashed var(--border);
+  border-radius: 16px;
+  background: var(--surface-muted);
 }
 .grafica__aviso--error {
-  color: #b45309;
+  color: var(--danger);
 }
 .grafica__detalle {
   display: block;
   margin-top: 4px;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--text-soft);
 }
 .grafica__contenedor {
-  background: #fff;
-  border: 1px solid var(--border, #e5e4e7);
-  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-}
-
-@media (prefers-color-scheme: dark) {
-  .grafica__aviso {
-    border-color: #2e303a;
-    background: #1f2028;
-    color: #9ca3af;
-  }
-  .grafica__contenedor {
-    background: #1f2028;
-    border-color: #2e303a;
-  }
+  box-shadow: var(--shadow);
 }
 </style>

@@ -48,10 +48,10 @@ defineEmits(['retry'])
   min-width: 0;
   padding: 24px;
   overflow: hidden;
-  background: var(--bg, #fff);
-  border: 1px solid var(--border, #dfe7e2);
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: 20px;
-  box-shadow: 0 18px 45px rgba(30, 66, 62, 0.07);
+  box-shadow: var(--shadow);
 }
 
 .chart-card--wide {
@@ -64,14 +64,14 @@ header {
 
 h3 {
   margin: 0;
-  color: var(--text-h, #183638);
+  color: var(--text-h);
   font-size: 1.05rem;
   letter-spacing: -0.015em;
 }
 
 header p {
   margin: 6px 0 0;
-  color: var(--text, #596c6d);
+  color: var(--text);
   font-size: 0.82rem;
 }
 
@@ -85,13 +85,13 @@ header p {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  color: #697a7b;
+  color: var(--text);
   text-align: center;
 }
 
 .chart-card__status--error {
   flex-direction: column;
-  color: #9f3434;
+  color: var(--danger);
 }
 
 .chart-card__status--error p {
@@ -102,26 +102,27 @@ header p {
 button {
   padding: 8px 14px;
   color: #fff;
-  background: #0f766e;
+  background: var(--accent);
   border: 0;
   border-radius: 999px;
   font-weight: 700;
+  cursor: pointer;
 }
 
 button:hover {
-  background: #115e59;
+  opacity: 0.9;
 }
 
 button:focus-visible {
-  outline: 3px solid rgba(13, 148, 136, 0.35);
+  outline: 3px solid var(--accent-bg);
   outline-offset: 2px;
 }
 
 .chart-card__loader {
   width: 18px;
   height: 18px;
-  border: 2px solid #b8cbc6;
-  border-top-color: #0f766e;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
