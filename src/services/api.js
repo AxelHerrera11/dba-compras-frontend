@@ -50,3 +50,11 @@ export async function getMontoTotalVendido() {
 export async function getTicketPromedio() {
   return request('/api/compras/promedio')
 }
+
+export async function getTarjetasPorMarca() {
+  return request('/api/tarjetas/por-marca')
+}
+
+export async function getCreditoVsDebito() {
+  return request('/api/tarjetas/credito-vs-debito')
+}
